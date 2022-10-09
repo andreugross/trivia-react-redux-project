@@ -1,12 +1,18 @@
 import React from 'react';
-// import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { requestTriviaAPI } from '../services/triviaAPI';
+import { submitLoginFormAction } from '../redux/actions';
 
 class Login extends React.Component {
-  state = {
-    name: '',
-    email: '',
-    isDisabled: true,
-  };
+  constructor() {
+    super();
+    this.state = {
+      name: '',
+      email: '',
+      isDisabled: true,
+    };
+  }
 
   onInputChange = ({ target }) => {
     const { name, value } = target;
@@ -18,6 +24,14 @@ class Login extends React.Component {
     return name.length > 0 && email.length > 0
       ? this.setState({ isDisabled: false })
       : this.setState({ isDisabled: true });
+  };
+
+  handleClick = async () => {
+    const { submitLoginForm, history } = this.props;
+    submitLoginForm(this.state);
+    const data = await requestTriviaAPI();
+    localStorage.setItem('token', data.token);
+    history.push('/game');
   };
 
   render() {
@@ -48,6 +62,7 @@ class Login extends React.Component {
             data-testid="btn-play"
             type="button"
             disabled={ isDisabled }
+            onClick={ this.handleClick }
           >
             Play
           </button>
@@ -57,4 +72,15 @@ class Login extends React.Component {
   }
 }
 
-export default Login;
+Login.propTypes = {
+  history: PropTypes.shape({
+    push: PropTypes.func,
+  }),
+  submitLoginForm: PropTypes.func,
+}.isRequired;
+
+const mapDispatchToProps = (dispatch) => ({
+  submitLoginForm: (payload) => dispatch(submitLoginFormAction(payload)),
+});
+
+export default connect(null, mapDispatchToProps)(Login);
