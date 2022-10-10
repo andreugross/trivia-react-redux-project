@@ -1,3 +1,5 @@
+import { SUBMIT_LOGIN } from '../actions';
+
 const INITIAL_STATE = {
   player: {
     name: '',
@@ -9,6 +11,11 @@ const INITIAL_STATE = {
 
 function playerReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
+  case SUBMIT_LOGIN:
+    return {
+      ...state,
+      ...action.payload,
+    };
   default:
     return state;
   }
