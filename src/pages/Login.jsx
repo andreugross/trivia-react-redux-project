@@ -9,7 +9,7 @@ class Login extends React.Component {
     super();
     this.state = {
       name: '',
-      email: '',
+      gravatarEmail: '',
       isDisabled: true,
     };
   }
@@ -20,8 +20,8 @@ class Login extends React.Component {
   };
 
   verifyButton = () => {
-    const { name, email } = this.state;
-    return name.length > 0 && email.length > 0
+    const { name, gravatarEmail } = this.state;
+    return name.length > 0 && gravatarEmail.length > 0
       ? this.setState({ isDisabled: false })
       : this.setState({ isDisabled: true });
   };
@@ -40,7 +40,7 @@ class Login extends React.Component {
   };
 
   render() {
-    const { isDisabled, name, email } = this.state;
+    const { isDisabled, name, gravatarEmail } = this.state;
     return (
       <div>
         <form>
@@ -58,8 +58,8 @@ class Login extends React.Component {
             <input
               type="email"
               data-testid="input-gravatar-email"
-              name="email"
-              value={ email }
+              name="gravatarEmail"
+              value={ gravatarEmail }
               onChange={ this.onInputChange }
             />
           </label>
