@@ -1,4 +1,4 @@
-import { SUBMIT_LOGIN } from '../actions';
+import { SUBMIT_LOGIN, ADD_POINTS } from '../actions';
 
 const INITIAL_STATE = {
 
@@ -16,6 +16,13 @@ function playerReducer(state = INITIAL_STATE, action) {
     return {
       ...state,
       ...action.payload,
+    };
+  case ADD_POINTS:
+    console.log(action.payload);
+    return {
+      ...state,
+      assertions: state.assertions + 1,
+      score: state.score + action.payload,
     };
   default:
     return state;

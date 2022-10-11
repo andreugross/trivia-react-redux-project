@@ -11,6 +11,7 @@ class Questions extends Component {
     answers: [],
     timer: 30,
     hasButton: false,
+    currentDifficulty: '',
   };
 
   async componentDidMount() {
@@ -45,14 +46,18 @@ class Questions extends Component {
 
   funcDePergunta = () => {
     const { questions, indice } = this.state;
+    // console.log('ok', questions);
     const num = 0.5;
     const incorretas = questions[indice].incorrect_answers
-      .map((a, i) => ({ name: a, isCorrect: false, dataTestId: `wrong-answer-${i}` }));
+      .map((a, i) => ({ name: a,
+        isCorrect: false,
+        dataTestId: `wrong-answer-${i}` }));
     const answersOrder = [{ name: questions[0].correct_answer,
       isCorrect: true,
-      dataTestId: 'correct-answer' }, ...incorretas];
+      dataTestId: 'correct-answer',
+      dificulty: questions.dificulty }, ...incorretas];
     const answersRandom = answersOrder.sort(() => Math.random() - num);
-    // console.log(answersRandom, 'test');
+    console.log(answersRandom, 'test');
     this.setState({
       answers: answersRandom,
     });
@@ -63,11 +68,6 @@ class Questions extends Component {
     this.setState({ indice: indice + 1 });
     const quatro = 4;
     const { history } = this.props;
-    // if (indice === tres) {
-    //   this.setState({
-    //     isDisabled: true,
-    //   });
-    // }
     this.funcDePergunta();
     this.setState({
       timer: 30,
@@ -77,8 +77,8 @@ class Questions extends Component {
     }
   };
 
-  handleClickAnswer = () => {
-    // const { hasButton } = this.state;
+  handleClickAnswer = ({ target }) => {
+    console.log(target.name);
     this.setState({
       hasButton: true,
     });
@@ -99,6 +99,7 @@ class Questions extends Component {
                 key={ index }
                 type="button"
                 data-testid={ a.dataTestId }
+                name={ a.dataTestId }
                 disabled={ isDisabledQuestions }
                 onClick={ this.handleClickAnswer }
               >
@@ -118,14 +119,6 @@ class Questions extends Component {
             </button>
           )
         }
-        {/* <button
-          type="button"
-          onClick={ this.handleClick }
-          disabled={ isDisabled }
-          data-testid="btn-next"
-        >
-          NEXT
-        </button> */}
       </div>
     );
   }
