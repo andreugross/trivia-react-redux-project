@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { getApiTrivia } from '../services/triviaAPI';
+import { addPoints } from '../redux/actions';
 
 class Questions extends Component {
   state = {
@@ -11,7 +13,6 @@ class Questions extends Component {
     answers: [],
     timer: 30,
     hasButton: false,
-    currentDifficulty: '',
   };
 
   async componentDidMount() {
@@ -57,7 +58,7 @@ class Questions extends Component {
       dataTestId: 'correct-answer',
       dificulty: questions.dificulty }, ...incorretas];
     const answersRandom = answersOrder.sort(() => Math.random() - num);
-    console.log(answersRandom, 'test');
+    // console.log(answersRandom, 'test');
     this.setState({
       answers: answersRandom,
     });
@@ -78,7 +79,26 @@ class Questions extends Component {
   };
 
   handleClickAnswer = ({ target }) => {
-    console.log(target.name);
+    // console.log(target.name);
+    const { dispatch } = this.props;
+    const { questions, indice, timer } = this.state;
+    let dificuldade;
+    const dez = 10;
+    const tres = 3;
+    console.log(target);
+    if (target.name === 'correct-answer') {
+      switch (questions[indice].dificulty) {
+      case 'easy':
+        dificuldade = 1;
+        break;
+      case 'medium':
+        dificuldade = 2;
+        break;
+      default:
+        dificuldade = tres;
+      }
+      dispatch(addPoints(dez + (timer * dificuldade)));
+    }
     this.setState({
       hasButton: true,
     });
@@ -130,4 +150,4 @@ Questions.propTypes = {
   }),
 }.isRequired;
 
-export default Questions;
+export default connect()(Questions);

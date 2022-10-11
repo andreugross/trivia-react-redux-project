@@ -12,13 +12,13 @@ const INITIAL_STATE = {
 function playerReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
   case SUBMIT_LOGIN:
-    console.log(action.payload);
+    // console.log(action.payload);
     return {
       ...state,
       ...action.payload,
     };
   case ADD_POINTS:
-    console.log(action.payload);
+    // console.log(action.payload);
     return {
       ...state,
       assertions: state.assertions + 1,
