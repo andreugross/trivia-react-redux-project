@@ -12,6 +12,9 @@ describe('Verifica página inicial de logim', () => {
     const textLogin = screen.getByRole('heading', {
       name: /login/i,
     });
+    const btnSettings = screen.getByRole('button', {  name: /settings/i});
+    
+    expect(btnSettings).toBeInTheDocument();
     expect(textLogin).toBeInTheDocument();
   });
 
