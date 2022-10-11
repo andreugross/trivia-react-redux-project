@@ -9,7 +9,7 @@ const INITIAL_STATE = {
 
 };
 
-function playerReducer(state = INITIAL_STATE, action) {
+function player(state = INITIAL_STATE, action) {
   switch (action.type) {
   case SUBMIT_LOGIN:
     // console.log(action.payload);
@@ -29,4 +29,4 @@ function playerReducer(state = INITIAL_STATE, action) {
   }
 }
 
-export default playerReducer;
+export default player;
