@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 // import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Questions from '../components/Questions';
+import Header from '../components/Header';
 import { getApiTrivia } from '../services/triviaAPI';
 
 class Game extends Component {
@@ -30,6 +31,7 @@ class Game extends Component {
   render() {
     return (
       <div>
+        <Header />
         GAME
         <Questions />
       </div>
