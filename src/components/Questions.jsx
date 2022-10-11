@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import { getApiTrivia } from '../services/triviaAPI';
 
 class Questions extends Component {
@@ -10,6 +10,7 @@ class Questions extends Component {
     isDisabledQuestions: false,
     answers: [],
     timer: 30,
+    hasButton: false,
   };
 
   async componentDidMount() {
@@ -45,8 +46,6 @@ class Questions extends Component {
   funcDePergunta = () => {
     const { questions, indice } = this.state;
     const num = 0.5;
-    // const answersOrder = [...questions[indice].incorrect_answers,
-    //   questions[indice].correct_answer];
     const incorretas = questions[indice].incorrect_answers
       .map((a, i) => ({ name: a, isCorrect: false, dataTestId: `wrong-answer-${i}` }));
     const answersOrder = [{ name: questions[0].correct_answer,
@@ -62,18 +61,32 @@ class Questions extends Component {
   handleClick = () => {
     const { indice } = this.state;
     this.setState({ indice: indice + 1 });
-    const tres = 3;
-    if (indice === tres) {
-      this.setState({
-        isDisabled: true,
-      });
-    }
+    const quatro = 4;
+    const { history } = this.props;
+    // if (indice === tres) {
+    //   this.setState({
+    //     isDisabled: true,
+    //   });
+    // }
     this.funcDePergunta();
+    this.setState({
+      timer: 30,
+    });
+    if (indice === quatro) {
+      history.push('/feedback');
+    }
+  };
+
+  handleClickAnswer = () => {
+    // const { hasButton } = this.state;
+    this.setState({
+      hasButton: true,
+    });
   };
 
   render() {
     const { questions,
-      indice, isDisabled, answers, timer, isDisabledQuestions } = this.state;
+      indice, isDisabled, answers, timer, isDisabledQuestions, hasButton } = this.state;
     return (
       <div>
         <p>{ timer }</p>
@@ -87,21 +100,41 @@ class Questions extends Component {
                 type="button"
                 data-testid={ a.dataTestId }
                 disabled={ isDisabledQuestions }
+                onClick={ this.handleClickAnswer }
               >
                 {a.name}
               </button>))
           }
         </div>
-        <button
+        {
+          hasButton && (
+            <button
+              type="button"
+              onClick={ this.handleClick }
+              disabled={ isDisabled }
+              data-testid="btn-next"
+            >
+              NEXT
+            </button>
+          )
+        }
+        {/* <button
           type="button"
           onClick={ this.handleClick }
           disabled={ isDisabled }
+          data-testid="btn-next"
         >
           NEXT
-        </button>
+        </button> */}
       </div>
     );
   }
 }
+
+Questions.propTypes = {
+  history: PropTypes.shape({
+    push: PropTypes.func,
+  }),
+}.isRequired;
 
 export default Questions;
