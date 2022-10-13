@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { getApiTrivia } from '../services/triviaAPI';
+import { addPoints } from '../redux/actions';
 
 class Questions extends Component {
   state = {
@@ -45,12 +47,16 @@ class Questions extends Component {
 
   funcDePergunta = () => {
     const { questions, indice } = this.state;
+    // console.log('ok', questions);
     const num = 0.5;
     const incorretas = questions[indice].incorrect_answers
-      .map((a, i) => ({ name: a, isCorrect: false, dataTestId: `wrong-answer-${i}` }));
+      .map((a, i) => ({ name: a,
+        isCorrect: false,
+        dataTestId: `wrong-answer-${i}` }));
     const answersOrder = [{ name: questions[0].correct_answer,
       isCorrect: true,
-      dataTestId: 'correct-answer' }, ...incorretas];
+      dataTestId: 'correct-answer',
+      dificulty: questions.dificulty }, ...incorretas];
     const answersRandom = answersOrder.sort(() => Math.random() - num);
     // console.log(answersRandom, 'test');
     this.setState({
@@ -63,11 +69,6 @@ class Questions extends Component {
     this.setState({ indice: indice + 1 });
     const quatro = 4;
     const { history } = this.props;
-    // if (indice === tres) {
-    //   this.setState({
-    //     isDisabled: true,
-    //   });
-    // }
     this.funcDePergunta();
     this.setState({
       timer: 30,
@@ -77,8 +78,27 @@ class Questions extends Component {
     }
   };
 
-  handleClickAnswer = () => {
-    // const { hasButton } = this.state;
+  handleClickAnswer = ({ target }) => {
+    // console.log(target.name);
+    const { dispatch } = this.props;
+    const { questions, indice, timer } = this.state;
+    let dificuldade;
+    const dez = 10;
+    const tres = 3;
+    console.log(target);
+    if (target.name === 'correct-answer') {
+      switch (questions[indice].dificulty) {
+      case 'easy':
+        dificuldade = 1;
+        break;
+      case 'medium':
+        dificuldade = 2;
+        break;
+      default:
+        dificuldade = tres;
+      }
+      dispatch(addPoints(dez + (timer * dificuldade)));
+    }
     this.setState({
       hasButton: true,
     });
@@ -99,6 +119,7 @@ class Questions extends Component {
                 key={ index }
                 type="button"
                 data-testid={ a.dataTestId }
+                name={ a.dataTestId }
                 disabled={ isDisabledQuestions }
                 onClick={ this.handleClickAnswer }
               >
@@ -118,14 +139,6 @@ class Questions extends Component {
             </button>
           )
         }
-        {/* <button
-          type="button"
-          onClick={ this.handleClick }
-          disabled={ isDisabled }
-          data-testid="btn-next"
-        >
-          NEXT
-        </button> */}
       </div>
     );
   }
@@ -137,4 +150,4 @@ Questions.propTypes = {
   }),
 }.isRequired;
 
-export default Questions;
+export default connect()(Questions);
