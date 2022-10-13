@@ -78,16 +78,18 @@ class Questions extends Component {
 
   handleClick = () => {
     const { indice } = this.state;
-    this.setState({ indice: indice + 1 });
     const quatro = 4;
     const { history } = this.props;
-    if (indice === quatro) {
-      this.funcDePergunta();
+    if (indice < quatro) {
+      console.log('test', history);
+    } else {
       this.setState({
         timer: 30,
+        hasButton: false,
+        indice: indice + 1,
+      }, () => {
+        this.funcDePergunta();
       });
-    } else {
-      history.push('/feedback');
     }
   };
 
