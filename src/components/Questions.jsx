@@ -81,7 +81,7 @@ class Questions extends Component {
     this.setState({ indice: indice + 1 });
     const quatro = 4;
     const { history } = this.props;
-    if (indice <= quatro) {
+    if (indice === quatro) {
       this.funcDePergunta();
       this.setState({
         timer: 30,
