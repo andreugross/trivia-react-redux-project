@@ -79,9 +79,9 @@ class Questions extends Component {
   handleClick = () => {
     const { indice } = this.state;
     const quatro = 4;
-    const { history } = this.props;
-    if (indice < quatro) {
-      console.log('test', history);
+    if (indice === quatro) {
+      const { history } = this.props;
+      history.push('/feedback');
     } else {
       this.setState({
         timer: 30,
@@ -100,7 +100,7 @@ class Questions extends Component {
     let dificuldade;
     const dez = 10;
     const tres = 3;
-    console.log(target);
+    // console.log(target);
     if (target.name === 'correct-answer') {
       switch (questions[indice].dificulty) {
       case 'easy':
