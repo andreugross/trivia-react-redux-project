@@ -19,9 +19,12 @@ class Questions extends Component {
     const token = localStorage.getItem('token');
     const perguntas = await getApiTrivia(token);
     // console.log(perguntas);
-    this.setState({
-      questions: perguntas.results,
-    }, this.funcDePergunta);
+    this.setState(
+      {
+        questions: perguntas.results,
+      },
+      this.funcDePergunta,
+    );
     // console.log(perguntas);
     this.cronometro();
   }
@@ -30,17 +33,20 @@ class Questions extends Component {
     this.setState({ timer: 30 }, () => {
       const second = 1000;
       const idInterval = setInterval(() => {
-        this.setState((prevState) => ({
-          timer: prevState.timer - 1,
-        }), () => {
-          const { timer } = this.state;
-          if (timer === 0) {
-            clearInterval(idInterval);
-            this.setState({
-              isDisabledQuestions: true,
-            });
-          }
-        });
+        this.setState(
+          (prevState) => ({
+            timer: prevState.timer - 1,
+          }),
+          () => {
+            const { timer } = this.state;
+            if (timer === 0) {
+              clearInterval(idInterval);
+              this.setState({
+                isDisabledQuestions: true,
+              });
+            }
+          },
+        );
       }, second);
     });
   };
@@ -49,14 +55,20 @@ class Questions extends Component {
     const { questions, indice } = this.state;
     // console.log('ok', questions);
     const num = 0.5;
-    const incorretas = questions[indice].incorrect_answers
-      .map((a, i) => ({ name: a,
-        isCorrect: false,
-        dataTestId: `wrong-answer-${i}` }));
-    const answersOrder = [{ name: questions[0].correct_answer,
-      isCorrect: true,
-      dataTestId: 'correct-answer',
-      dificulty: questions.dificulty }, ...incorretas];
+    const incorretas = questions[indice].incorrect_answers.map((a, i) => ({
+      name: a,
+      isCorrect: false,
+      dataTestId: `wrong-answer-${i}`,
+    }));
+    const answersOrder = [
+      {
+        name: questions[indice].correct_answer,
+        isCorrect: true,
+        dataTestId: 'correct-answer',
+        dificulty: questions.dificulty,
+      },
+      ...incorretas,
+    ];
     const answersRandom = answersOrder.sort(() => Math.random() - num);
     // console.log(answersRandom, 'test');
     this.setState({
@@ -69,11 +81,12 @@ class Questions extends Component {
     this.setState({ indice: indice + 1 });
     const quatro = 4;
     const { history } = this.props;
-    this.funcDePergunta();
-    this.setState({
-      timer: 30,
-    });
-    if (indice === quatro) {
+    if (indice <= quatro) {
+      this.funcDePergunta();
+      this.setState({
+        timer: 30,
+      });
+    } else {
       history.push('/feedback');
     }
   };
@@ -97,7 +110,7 @@ class Questions extends Component {
       default:
         dificuldade = tres;
       }
-      dispatch(addPoints(dez + (timer * dificuldade)));
+      dispatch(addPoints(dez + timer * dificuldade));
     }
     this.setState({
       hasButton: true,
@@ -105,40 +118,44 @@ class Questions extends Component {
   };
 
   render() {
-    const { questions,
-      indice, isDisabled, answers, timer, isDisabledQuestions, hasButton } = this.state;
+    const {
+      questions,
+      indice,
+      isDisabled,
+      answers,
+      timer,
+      isDisabledQuestions,
+      hasButton,
+    } = this.state;
     return (
       <div>
-        <p>{ timer }</p>
-        <div data-testid="question-text">{ questions[indice]?.question }</div>
-        <div data-testid="question-category">{ questions[indice]?.category }</div>
+        <p>{timer}</p>
+        <div data-testid="question-text">{questions[indice]?.question}</div>
+        <div data-testid="question-category">{questions[indice]?.category}</div>
         <div data-testid="answer-options">
-          {
-            answers.map((a, index) => (
-              <button
-                key={ index }
-                type="button"
-                data-testid={ a.dataTestId }
-                name={ a.dataTestId }
-                disabled={ isDisabledQuestions }
-                onClick={ this.handleClickAnswer }
-              >
-                {a.name}
-              </button>))
-          }
-        </div>
-        {
-          hasButton && (
+          {answers.map((a, index) => (
             <button
+              key={ index }
               type="button"
-              onClick={ this.handleClick }
-              disabled={ isDisabled }
-              data-testid="btn-next"
+              data-testid={ a.dataTestId }
+              name={ a.dataTestId }
+              disabled={ isDisabledQuestions }
+              onClick={ this.handleClickAnswer }
             >
-              NEXT
+              {a.name}
             </button>
-          )
-        }
+          ))}
+        </div>
+        {hasButton && (
+          <button
+            type="button"
+            onClick={ this.handleClick }
+            disabled={ isDisabled }
+            data-testid="btn-next"
+          >
+            NEXT
+          </button>
+        )}
       </div>
     );
   }
